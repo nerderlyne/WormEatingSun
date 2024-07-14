@@ -16,14 +16,14 @@
         </style>
     </head>
     <body>
-        <canvas id="wormyCanvas" width="400" height="400"></canvas>
+        <canvas id="wormyCanvas" width="1200" height="630"></canvas>
 
         <script>
             const canvas = document.getElementById("wormyCanvas");
             const ctx = canvas.getContext("2d");
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = 150;
+            const radius = 250;
 
             function drawWorm(x, y, angle) {
                 ctx.save();
@@ -31,10 +31,10 @@
                 ctx.rotate(angle);
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.quadraticCurveTo(2, -3, 4, 0);
-                ctx.quadraticCurveTo(6, 3, 8, 0);
+                ctx.quadraticCurveTo(4, -6, 8, 0);
+                ctx.quadraticCurveTo(12, 6, 16, 0);
                 ctx.strokeStyle = "red";
-                ctx.lineWidth = 0.2;
+                ctx.lineWidth = 0.5;
                 ctx.stroke();
                 ctx.restore();
             }
@@ -61,30 +61,51 @@
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, Math.PI, 2 * Math.PI);
                 ctx.strokeStyle = "green";
-                ctx.lineWidth = 1.3;
+                ctx.lineWidth = 2;
                 ctx.stroke();
 
                 // Draw red border on bottom half
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, 0, Math.PI);
                 ctx.strokeStyle = "red";
-                ctx.lineWidth = 1.3;
+                ctx.lineWidth = 2;
                 ctx.stroke();
+            }
+
+            function renderStaticImage() {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                drawSun();
+                generateWorms(1000);
+
+                // Add text
+                ctx.font = "bold 48px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("Wormy Sun", centerX, canvas.height - 50);
             }
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 drawSun();
-
-                //Draw worms
                 generateWorms(420);
 
                 requestAnimationFrame(animate);
             }
 
-            // Start animation
-            animate();
+            // Check if this is being rendered for OG image or for the webpage
+            const urlParams = new URLSearchParams(window.location.search);
+            const isOGImage = urlParams.get("og") === "true";
+
+            if (isOGImage) {
+                renderStaticImage();
+            } else {
+                animate();
+            }
         </script>
     </body>
 </html>
